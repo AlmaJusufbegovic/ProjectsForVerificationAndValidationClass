@@ -58,45 +58,5 @@
       }
     ],
     "Recenzije": []
-  },
-  {
-    "ID": 4,
-    "ISBN": "1234",
-    "NazivKnjige": "amina",
-    "DatumObjavljivanja": "2002-03-09T00:00:00",
-    "VrstaKnjige": 1,
-    "Izdavac": {
-      "ID": 4,
-      "NazivIzdavaca": "klju"
-    },
-    "Autori": [
-      {
-        "ID": 3,
-        "ImeAutora": "amina",
-        "PrezimeAutora": "amina",
-        "DatumRodjenja": "1987-03-09T00:00:00"
-      }
-    ],
-    "Recenzije": []
-  },
-  {
-    "ID": 5,
-    "ISBN": "12348",
-    "NazivKnjige": "naniiia",
-    "DatumObjavljivanja": "2002-03-09T00:00:00",
-    "VrstaKnjige": 1,
-    "Izdavac": {
-      "ID": 4,
-      "NazivIzdavaca": "klju"
-    },
-    "Autori": [
-      {
-        "ID": 3,
-        "ImeAutora": "amina",
-        "PrezimeAutora": "amina",
-        "DatumRodjenja": "1987-03-09T00:00:00"
-      }
-    ],
-    "Recenzije": []
   }
 ]

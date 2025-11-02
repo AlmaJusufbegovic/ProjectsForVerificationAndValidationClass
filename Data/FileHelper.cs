@@ -11,16 +11,16 @@ namespace ForBooks.Data
 
         static FileHelper()
         {
-            // 1️⃣ Početna putanja odakle se program pokreće
+            // Početna putanja odakle se program pokreće
             string currentPath = AppContext.BaseDirectory;
 
-            // 2️⃣ Ako sadrži "bin", idi do korijena projekta
+            // Ako sadrži "bin", idi do korijena projekta
             string? projectRoot = currentPath;
 
             if (currentPath.Contains("bin"))
             {
                 var dir = new DirectoryInfo(currentPath);
-                while (dir != null && dir.Name != "ForBooks") // ime tvog projekta
+                while (dir != null && dir.Name != "ForBooks") 
                 {
                     dir = dir.Parent;
                 }
@@ -29,14 +29,14 @@ namespace ForBooks.Data
                     projectRoot = dir.FullName;
             }
 
-            // 3️⃣ Postavi konačnu putanju do DataFiles
+            // Postavi konačnu putanju do DataFiles
             basePath = Path.Combine(projectRoot, "DataFiles");
 
-            // 4️⃣ Ako folder ne postoji, kreiraj ga
+            //  Ako folder ne postoji, kreiraj ga
             if (!Directory.Exists(basePath))
                 Directory.CreateDirectory(basePath);
 
-            Console.WriteLine($"📂 JSON folder: {basePath}");
+            Console.WriteLine($"JSON folder: {basePath}");
         }
 
         private static string GetPath(string fileName)
@@ -44,7 +44,7 @@ namespace ForBooks.Data
             return Path.Combine(basePath, $"{fileName}.json");
         }
 
-        // 🔹 Učitavanje podataka
+        // Učitavanje podataka
         public static List<T> LoadFromFile<T>(string fileName)
         {
             string path = GetPath(fileName);
@@ -56,7 +56,7 @@ namespace ForBooks.Data
             return data ?? new List<T>();
         }
 
-        // 🔹 Čuvanje podataka
+        // Čuvanje podataka
         public static void SaveToFile<T>(string fileName, List<T> data)
         {
             string path = GetPath(fileName);
