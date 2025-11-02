@@ -1,19 +1,21 @@
-﻿using ForBooks.Models;
+﻿using ForBooks.Data;
+using ForBooks.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ForBooks.Services
 {
     public class KorisnikServis
     {
-        private readonly Dictionary<string, Korisnik> korisnici = new();
+        private readonly DbClass _db;
+
+        public KorisnikServis(DbClass db)
+        {
+            _db = db;
+        }
 
         public void Registracija()
         {
-            Console.WriteLine("\n--- Registracija ---");
+            Console.WriteLine("\n Registracija: ");
             Console.Write("Ime: ");
             string ime = Console.ReadLine()!;
             Console.Write("Prezime: ");
@@ -27,14 +29,18 @@ namespace ForBooks.Services
             Console.Write("Lozinka: ");
             string lozinka = Console.ReadLine()!;
 
-            if (korisnici.ContainsKey(email))
+            // provjera postoji li email (ručno)
+            for (int i = 0; i < _db.korisnici.Count; i++)
             {
-                Console.WriteLine("Korisnik sa ovim emailom već postoji!");
-                return;
+                if (_db.korisnici[i].Email.Equals(email, StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine("Korisnik sa ovim emailom već postoji!");
+                    return;
+                }
             }
 
-            var korisnik = new Korisnik(korisnici.Count + 1, ime, prezime, username, email, lozinka, telefon);
-            korisnici[email] = korisnik;
+            var korisnik = new Korisnik(_db.korisnici.Count + 1, ime, prezime, username, email, lozinka, telefon);
+            _db.AddKorisnik(korisnik);
 
             Console.WriteLine($"Email za potvrdu poslan na {email} (simulacija).");
             Console.WriteLine("Potvrdite registraciju u roku od 5 minuta!");
@@ -42,11 +48,21 @@ namespace ForBooks.Services
 
         public void PotvrdaRegistracije()
         {
-            Console.WriteLine("\n--- Potvrda registracije ---");
+            Console.WriteLine("\n Potvrda registracije: ");
             Console.Write("Unesite email: ");
             string email = Console.ReadLine()!;
 
-            if (!korisnici.TryGetValue(email, out var korisnik))
+            Korisnik? korisnik = null;
+            for (int i = 0; i < _db.korisnici.Count; i++)
+            {
+                if (_db.korisnici[i].Email.Equals(email, StringComparison.OrdinalIgnoreCase))
+                {
+                    korisnik = _db.korisnici[i];
+                    break;
+                }
+            }
+
+            if (korisnik == null)
             {
                 Console.WriteLine("Korisnik nije pronađen.");
                 return;
@@ -60,20 +76,40 @@ namespace ForBooks.Services
             }
             else
             {
-                korisnici.Remove(email);
+                // ukloni korisnika
+                for (int i = 0; i < _db.korisnici.Count; i++)
+                {
+                    if (_db.korisnici[i].Email.Equals(email, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _db.korisnici.RemoveAt(i);
+                        break;
+                    }
+                }
                 Console.WriteLine("Vrijeme za potvrdu isteklo. Registracija poništena.");
             }
+
+            _db.UpdateKorisnici();
         }
 
         public Korisnik? Prijava()
         {
-            Console.WriteLine("\n--- Prijava ---");
+            Console.WriteLine("\n Prijava: ");
             Console.Write("Email: ");
             string email = Console.ReadLine()!;
             Console.Write("Lozinka: ");
             string lozinka = Console.ReadLine()!;
 
-            if (!korisnici.TryGetValue(email, out var korisnik))
+            Korisnik? korisnik = null;
+            for (int i = 0; i < _db.korisnici.Count; i++)
+            {
+                if (_db.korisnici[i].Email.Equals(email, StringComparison.OrdinalIgnoreCase))
+                {
+                    korisnik = _db.korisnici[i];
+                    break;
+                }
+            }
+
+            if (korisnik == null)
             {
                 Console.WriteLine("Korisnik ne postoji.");
                 return null;
@@ -95,5 +131,4 @@ namespace ForBooks.Services
             return korisnik;
         }
     }
-
 }

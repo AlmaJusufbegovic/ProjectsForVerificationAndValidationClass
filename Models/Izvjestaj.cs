@@ -12,7 +12,7 @@ namespace ForBooks.Models
         public int ID { get; set; }
         public Korisnik Korisnik { get; set; }
         public List<int> BrojStranicaNedovrsenihKnjiga { get; set; } = new();
-        public string NajcitanijiZanr { get; set; }
+        public string NajcitanijiZanr { get; set; } = string.Empty;   
         public List<Knjiga> PrijedloziNovihKnjiga { get; set; } = new();
         public VrstaIzvjestaja Vrsta { get; set; }
 
