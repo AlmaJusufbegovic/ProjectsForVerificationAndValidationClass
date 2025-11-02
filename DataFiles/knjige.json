@@ -38,5 +38,65 @@
       }
     ],
     "Recenzije": []
+  },
+  {
+    "ID": 3,
+    "ISBN": "999987654",
+    "NazivKnjige": "Na Drini ćuprijaaaaa",
+    "DatumObjavljivanja": "1945-11-01T00:00:00",
+    "VrstaKnjige": 3,
+    "Izdavac": {
+      "ID": 1,
+      "NazivIzdavaca": "Prosveta"
+    },
+    "Autori": [
+      {
+        "ID": 1,
+        "ImeAutora": "Ivo",
+        "PrezimeAutora": "Andrić",
+        "DatumRodjenja": "1892-10-09T00:00:00"
+      }
+    ],
+    "Recenzije": []
+  },
+  {
+    "ID": 4,
+    "ISBN": "1234",
+    "NazivKnjige": "amina",
+    "DatumObjavljivanja": "2002-03-09T00:00:00",
+    "VrstaKnjige": 1,
+    "Izdavac": {
+      "ID": 4,
+      "NazivIzdavaca": "klju"
+    },
+    "Autori": [
+      {
+        "ID": 3,
+        "ImeAutora": "amina",
+        "PrezimeAutora": "amina",
+        "DatumRodjenja": "1987-03-09T00:00:00"
+      }
+    ],
+    "Recenzije": []
+  },
+  {
+    "ID": 5,
+    "ISBN": "12348",
+    "NazivKnjige": "naniiia",
+    "DatumObjavljivanja": "2002-03-09T00:00:00",
+    "VrstaKnjige": 1,
+    "Izdavac": {
+      "ID": 4,
+      "NazivIzdavaca": "klju"
+    },
+    "Autori": [
+      {
+        "ID": 3,
+        "ImeAutora": "amina",
+        "PrezimeAutora": "amina",
+        "DatumRodjenja": "1987-03-09T00:00:00"
+      }
+    ],
+    "Recenzije": []
   }
 ]

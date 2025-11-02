@@ -111,27 +111,35 @@ namespace ForBooks.Services
         }
 
         // Prikaz knjige 
-        public void PrikaziSveKnjige()
+            public void PrikaziSveKnjige()
         {
-            Console.WriteLine("\n Sve knjige ");
-            if (_db.knjige.Count == 0) { Console.WriteLine("Nema knjiga."); return; }
+            Console.WriteLine("\n Sve knjige");
+            if (_db.knjige.Count == 0)
+            {
+                Console.WriteLine("Nema knjiga.");
+                return;
+            }
 
             for (int i = 0; i < _db.knjige.Count; i++)
             {
                 var k = _db.knjige[i];
+
                 Console.WriteLine($"{k.ID}. {k.NazivKnjige} | {k.ISBN} | {k.VrstaKnjige} | {k.DatumObjavljivanja:dd.MM.yyyy} | Izdavač: {k.Izdavac?.NazivIzdavaca}");
 
                 if (k.Autori != null && k.Autori.Count > 0)
                 {
-                    Console.Write(" Autori: ");
-                    for (int a = 0; a < k.Autori.Count; a++)
+                    Console.Write("Autori: ");
+                    for (int j = 0; j < k.Autori.Count; j++)
                     {
-                        var au = k.Autori[a];
-                        Console.Write($"{au.ImeAutora} {au.PrezimeAutora}");
-                        if (a < k.Autori.Count - 1) Console.Write(", ");
+                        var a = k.Autori[j];
+                        Console.Write($"{a.ImeAutora} {a.PrezimeAutora}");
+                        if (j < k.Autori.Count - 1)
+                            Console.Write(", ");
                     }
-                    Console.WriteLine();
+                    Console.WriteLine(); // novi red nakon autora
                 }
+
+                Console.WriteLine(); // razmak između knjiga
             }
         }
 

@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -6,44 +7,56 @@ namespace ForBooks.Data
 {
     public static class FileHelper
     {
-        private static string basePath = "DataFiles";
+        private static readonly string basePath;
 
         static FileHelper()
         {
-            if (!Directory.Exists(basePath))
+            // 1️⃣ Početna putanja odakle se program pokreće
+            string currentPath = AppContext.BaseDirectory;
+
+            // 2️⃣ Ako sadrži "bin", idi do korijena projekta
+            string? projectRoot = currentPath;
+
+            if (currentPath.Contains("bin"))
             {
-                Directory.CreateDirectory(basePath);
+                var dir = new DirectoryInfo(currentPath);
+                while (dir != null && dir.Name != "ForBooks") // ime tvog projekta
+                {
+                    dir = dir.Parent;
+                }
+
+                if (dir != null)
+                    projectRoot = dir.FullName;
             }
+
+            // 3️⃣ Postavi konačnu putanju do DataFiles
+            basePath = Path.Combine(projectRoot, "DataFiles");
+
+            // 4️⃣ Ako folder ne postoji, kreiraj ga
+            if (!Directory.Exists(basePath))
+                Directory.CreateDirectory(basePath);
+
+            Console.WriteLine($"📂 JSON folder: {basePath}");
         }
 
         private static string GetPath(string fileName)
         {
-            return Path.Combine(basePath, fileName + ".json");
+            return Path.Combine(basePath, $"{fileName}.json");
         }
 
-        // Ucitavanje podataka 
+        // 🔹 Učitavanje podataka
         public static List<T> LoadFromFile<T>(string fileName)
         {
             string path = GetPath(fileName);
-
             if (!File.Exists(path))
-            {
                 return new List<T>();
-            }
 
             string json = File.ReadAllText(path);
-
-                List<T>? data = JsonConvert.DeserializeObject<List<T>>(json);
-
-            if (data == null)
-            {
-                data = new List<T>();
-            }
-
-            return data;
+            var data = JsonConvert.DeserializeObject<List<T>>(json);
+            return data ?? new List<T>();
         }
 
-        // Cuvanje podataka 
+        // 🔹 Čuvanje podataka
         public static void SaveToFile<T>(string fileName, List<T> data)
         {
             string path = GetPath(fileName);
@@ -52,4 +65,3 @@ namespace ForBooks.Data
         }
     }
 }
-
