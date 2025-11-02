@@ -10,5 +10,17 @@
     "ImeAutora": "Fjodor",
     "PrezimeAutora": "Dostojevski",
     "DatumRodjenja": "1821-11-11T00:00:00"
+  },
+  {
+    "ID": 3,
+    "ImeAutora": "Džordž",
+    "PrezimeAutora": "Orvel",
+    "DatumRodjenja": "1903-06-25T00:00:00"
+  },
+  {
+    "ID": 4,
+    "ImeAutora": "Dafne",
+    "PrezimeAutora": "Di Morije",
+    "DatumRodjenja": "1907-05-13T00:00:00"
   }
 ]
