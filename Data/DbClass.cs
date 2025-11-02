@@ -1,9 +1,6 @@
 ﻿using ForBooks.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ForBooks.Data
 {
@@ -15,40 +12,60 @@ namespace ForBooks.Data
 
         public DbClass()
         {
-            korisnici = new List<Korisnik>();
-            knjige = new List<Knjiga>();
-            autori = new List<Autor>();
+            korisnici = FileHelper.LoadFromFile<Korisnik>("korisnici");
+            knjige    = FileHelper.LoadFromFile<Knjiga>("knjige");
+            autori    = FileHelper.LoadFromFile<Autor>("autori");
         }
 
+        // Korisnici
         public void AddKorisnik(Korisnik korisnik)
         {
             korisnici.Add(korisnik);
+            FileHelper.SaveToFile("korisnici", korisnici);
         }
 
-        public void AddKnjiga(Knjiga loan)
-        {
-            knjige.Add(loan);
-        }
-
-        public void AddAutor(Autor payment)
-        {
-            autori.Add(payment);
-        }
-
-        public Korisnik GetKorisnik(int korisnikId)
+        public Korisnik? GetKorisnik(int korisnikId)
         {
             return korisnici.FirstOrDefault(u => u.ID == korisnikId);
         }
 
-        public Knjiga GetKnjiga(int knjigaId)
+        public void UpdateKorisnici()
+        {
+            FileHelper.SaveToFile("korisnici", korisnici);
+        }
+
+        // Knjige
+        public void AddKnjiga(Knjiga knjiga)
+        {
+            knjige.Add(knjiga);
+            FileHelper.SaveToFile("knjige", knjige);
+        }
+
+        public Knjiga? GetKnjiga(int knjigaId)
         {
             return knjige.FirstOrDefault(b => b.ID == knjigaId);
         }
 
-        public Autor GetAutor(int autorId)
+        public void UpdateKnjige()
+        {
+            FileHelper.SaveToFile("knjige", knjige);
+        }
+
+        // Autori
+        public void AddAutor(Autor autor)
+        {
+            autori.Add(autor);
+            FileHelper.SaveToFile("autori", autori);
+        }
+
+        public Autor? GetAutor(int autorId)
         {
             return autori.FirstOrDefault(a => a.ID == autorId);
         }
-    }
 
+        public void UpdateAutori()
+        {
+            FileHelper.SaveToFile("autori", autori);
+        }
+    }
 }

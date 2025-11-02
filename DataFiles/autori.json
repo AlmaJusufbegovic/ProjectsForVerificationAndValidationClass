@@ -1,0 +1,14 @@
+[
+  {
+    "ID": 1,
+    "ImeAutora": "Ivo",
+    "PrezimeAutora": "Andrić",
+    "DatumRodjenja": "1892-10-09T00:00:00"
+  },
+  {
+    "ID": 2,
+    "ImeAutora": "Fjodor",
+    "PrezimeAutora": "Dostojevski",
+    "DatumRodjenja": "1821-11-11T00:00:00"
+  }
+]
