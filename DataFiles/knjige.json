@@ -38,5 +38,25 @@
       }
     ],
     "Recenzije": []
+  },
+  {
+    "ID": 3,
+    "ISBN": "999987654",
+    "NazivKnjige": "Na Drini ćuprijaaaaa",
+    "DatumObjavljivanja": "1945-11-01T00:00:00",
+    "VrstaKnjige": 3,
+    "Izdavac": {
+      "ID": 1,
+      "NazivIzdavaca": "Prosveta"
+    },
+    "Autori": [
+      {
+        "ID": 1,
+        "ImeAutora": "Ivo",
+        "PrezimeAutora": "Andrić",
+        "DatumRodjenja": "1892-10-09T00:00:00"
+      }
+    ],
+    "Recenzije": []
   }
 ]
