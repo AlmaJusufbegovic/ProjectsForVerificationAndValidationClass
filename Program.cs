@@ -10,16 +10,18 @@ namespace ForBooks
         {
             var db = new DbClass();
             var korisnikServis = new KorisnikServis(db);
-            var knjigaServis   = new KnjigaServis(db);
+            var knjigaServis = new KnjigaServis(db);
+            var recenzijaServis = new RecenzijaServis(db);
 
             while (true)
             {
-                Console.WriteLine("\n GLAVNI MENI: ");
+                Console.WriteLine("\n=== GLAVNI MENI ===");
                 Console.WriteLine("1. Registracija");
                 Console.WriteLine("2. Potvrdi registraciju");
                 Console.WriteLine("3. Prijava");
                 Console.WriteLine("4. Upravljanje knjigama");
-                Console.WriteLine("5. Izlaz");
+                Console.WriteLine("5. Upravljanje recenzijama");
+                Console.WriteLine("6. Izlaz");
                 Console.Write("Odabir: ");
                 string izbor = Console.ReadLine()!;
 
@@ -29,7 +31,8 @@ namespace ForBooks
                     case "2": korisnikServis.PotvrdaRegistracije(); break;
                     case "3": korisnikServis.Prijava(); break;
                     case "4": PodmeniKnjige(knjigaServis); break;
-                    case "5": Console.WriteLine("Doviđenja!"); return;
+                    case "5": PodmeniRecenzije(recenzijaServis); break;
+                    case "6": Console.WriteLine("Doviđenja!"); return;
                     default: Console.WriteLine("Neispravan unos!"); break;
                 }
             }
@@ -39,7 +42,7 @@ namespace ForBooks
         {
             while (true)
             {
-                Console.WriteLine("\n UPRAVLJANJE KNJIGAMA: ");
+                Console.WriteLine("\n--- UPRAVLJANJE KNJIGAMA ---");
                 Console.WriteLine("1. Dodaj knjigu");
                 Console.WriteLine("2. Prikaži sve knjige");
                 Console.WriteLine("3. Ažuriraj knjigu");
@@ -65,6 +68,33 @@ namespace ForBooks
                 }
             }
         }
+
+   
+        static void PodmeniRecenzije(RecenzijaServis s)
+        {
+            while (true)
+            {
+                Console.WriteLine("\n--- UPRAVLJANJE RECENZIJAMA ---");
+                Console.WriteLine("1. Dodaj recenziju");
+                Console.WriteLine("2. Prikaži sve recenzije");
+                Console.WriteLine("3. Izračunaj prosjek ocjena");
+                Console.WriteLine("4. Prikaži preporučene knjige");
+                Console.WriteLine("5. Obriši recenziju");
+                Console.WriteLine("6. Nazad");
+                Console.Write("Odabir: ");
+
+                string izbor = Console.ReadLine()!;
+                switch (izbor)
+                {
+                    case "1": s.DodajRecenziju(); break;
+                    case "2": s.PrikaziSveRecenzije(); break;
+                    case "3": s.IzracunajProsjekOcjena(); break;
+                    case "4": s.PrikaziPreporuceneKnjige(); break;
+                    case "5": s.ObrisiRecenziju(); break;
+                    case "6": return;
+                    default: Console.WriteLine("Neispravan unos."); break;
+                }
+            }
+        }
     }
 }
-

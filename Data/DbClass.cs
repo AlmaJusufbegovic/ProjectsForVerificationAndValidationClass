@@ -9,12 +9,22 @@ namespace ForBooks.Data
         public List<Korisnik> korisnici { get; set; }
         public List<Knjiga> knjige { get; set; }
         public List<Autor> autori { get; set; }
+        public List<Recenzija> Recenzije { get; set; }
+
 
         public DbClass()
         {
             korisnici = FileHelper.LoadFromFile<Korisnik>("korisnici");
-            knjige    = FileHelper.LoadFromFile<Knjiga>("knjige");
-            autori    = FileHelper.LoadFromFile<Autor>("autori");
+            knjige = FileHelper.LoadFromFile<Knjiga>("knjige");
+            autori = FileHelper.LoadFromFile<Autor>("autori");
+            Recenzije = FileHelper.LoadFromFile<Recenzija>("recenzije");
+
+            foreach (var r in Recenzije)
+            {
+                r.Knjiga = knjige.FirstOrDefault(k => k.ID == r.KnjigaID);
+                r.Korisnik = korisnici.FirstOrDefault(u => u.ID == r.KorisnikID);
+            }
+
         }
 
         // Korisnici
@@ -67,5 +77,19 @@ namespace ForBooks.Data
         {
             FileHelper.SaveToFile("autori", autori);
         }
+        // Recenzije
+        public void AddRecenzija(Recenzija recenzija)
+        {
+            Recenzije.Add(recenzija);
+            FileHelper.SaveToFile("recenzije", Recenzije);
+        }
+
+        public List<Recenzija> GetRecenzijeZaKnjigu(int knjigaId)
+        {
+            return Recenzije
+                .Where(r => r.Knjiga != null && r.Knjiga.ID == knjigaId)
+                .ToList();
+        }
+
     }
 }

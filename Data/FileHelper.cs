@@ -45,11 +45,11 @@ namespace ForBooks.Data
         }
 
         // Učitavanje podataka
+      
         public static List<T> LoadFromFile<T>(string fileName)
         {
             string path = GetPath(fileName);
-            if (!File.Exists(path))
-                return new List<T>();
+            if (!File.Exists(path)) return new List<T>();
 
             string json = File.ReadAllText(path);
             var data = JsonConvert.DeserializeObject<List<T>>(json);
