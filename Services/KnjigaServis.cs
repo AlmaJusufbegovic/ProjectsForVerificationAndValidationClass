@@ -307,5 +307,320 @@ namespace ForBooks.Services
 
             if (pronadjeno == 0) Console.WriteLine("Nema rezultata.");
         }
+        
+
+        // Preporuci knjigu 
+        public void PredloziKnjiguMeni()
+        {
+            Console.WriteLine("Predloži mi knjigu\n");
+            Console.WriteLine("Za personalizovane preporuke, molimo prijavite se:\n");
+
+            Console.Write("Email: ");
+            string email = Console.ReadLine()!;
+            if (IsNullOrWhite(email))
+            {
+                Console.WriteLine("GREŠKA: Email ne može biti prazan.");
+                return;
+            }
+
+            Console.Write("Šifra: ");
+            string sifra = Console.ReadLine()!;
+            if (IsNullOrWhite(sifra))
+            {
+                Console.WriteLine("GREŠKA: Šifra ne može biti prazna.");
+                return;
+            }
+
+            // Pronađi korisnika
+            Korisnik? korisnik = null;
+            for (int i = 0; i < _db.korisnici.Count; i++)
+            {
+                if (_db.korisnici[i].Email == email && _db.korisnici[i].Lozinka == sifra)
+                {
+                    korisnik = _db.korisnici[i];
+                    break;
+                }
+            }
+
+            if (korisnik == null)
+            {
+                Console.WriteLine("\n Pogrešan email ili šifra. Pokušaj ponovo.");
+                return;
+            }
+
+            Console.WriteLine($"\n Dobro došao/la, {korisnik.Ime} {korisnik.Prezime}!\n");
+
+            // Pozovi funkciju za preporuke
+            PreporuciKnjige(korisnik.ID);
+        }
+
+        // Preporuka knjiga za prijavljenog korisnika
+        private void PreporuciKnjige(int korisnikId)
+        {
+            Console.WriteLine("═══════════════════════════════════════════════════\n");
+
+            // Pronađi knjige koje je korisnik pročitao (na osnovu recenzija)
+            var procitaneKnjige = new List<Knjiga>();
+            for (int i = 0; i < _db.knjige.Count; i++)
+            {
+                var knjiga = _db.knjige[i];
+                if (knjiga.Recenzije != null)
+                {
+                    for (int j = 0; j < knjiga.Recenzije.Count; j++)
+                    {
+                        if (knjiga.Recenzije[j].Korisnik?.ID == korisnikId)
+                        {
+                            procitaneKnjige.Add(knjiga);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (procitaneKnjige.Count == 0)
+            {
+                Console.WriteLine("Nemate pročitanih knjiga u sistemu.");
+                Console.WriteLine("Evo najpopularnijih knjiga:\n");
+                PreporuciNajpopularnije();
+                return;
+            }
+
+            Console.WriteLine($" Analiziram pročitane knjiga...\n");
+
+            // Lista preporuka: [indeks_knjige, skor]
+            var preporuke = new List<int[]>();
+            var razloziPreporuka = new List<List<string>>();
+
+            for (int i = 0; i < _db.knjige.Count; i++)
+            {
+                var knjiga = _db.knjige[i];
+
+                // Preskoči već pročitane knjige
+                bool procitana = false;
+                for (int p = 0; p < procitaneKnjige.Count; p++)
+                {
+                    if (procitaneKnjige[p].ID == knjiga.ID)
+                    {
+                        procitana = true;
+                        break;
+                    }
+                }
+                if (procitana) continue;
+
+                // Izračunaj sličnost
+                int skor = 0;
+                var razlozi = new List<string>();
+
+                for (int p = 0; p < procitaneKnjige.Count; p++)
+                {
+                    var procitana_knjiga = procitaneKnjige[p];
+
+                    
+                    if (knjiga.VrstaKnjige == procitana_knjiga.VrstaKnjige)
+                    {
+                        skor += 3;
+                        string razlog = $"Isti tip: {knjiga.VrstaKnjige}";
+                        bool vec_postoji = false;
+                        for (int r = 0; r < razlozi.Count; r++)
+                        {
+                            if (razlozi[r] == razlog) { vec_postoji = true; break; }
+                        }
+                        if (!vec_postoji) razlozi.Add(razlog);
+                    }
+
+                
+                    if (knjiga.Autori != null && procitana_knjiga.Autori != null)
+                    {
+                        for (int a1 = 0; a1 < knjiga.Autori.Count; a1++)
+                        {
+                            for (int a2 = 0; a2 < procitana_knjiga.Autori.Count; a2++)
+                            {
+                                if (knjiga.Autori[a1].ID == procitana_knjiga.Autori[a2].ID)
+                                {
+                                    skor += 5;
+                                    string autor = $"{knjiga.Autori[a1].ImeAutora} {knjiga.Autori[a1].PrezimeAutora}";
+                                    string razlog = $"Autor: {autor}";
+                                    bool vec_postoji = false;
+                                    for (int r = 0; r < razlozi.Count; r++)
+                                    {
+                                        if (razlozi[r] == razlog) { vec_postoji = true; break; }
+                                    }
+                                    if (!vec_postoji) razlozi.Add(razlog);
+                                }
+                            }
+                        }
+                    }
+
+                   
+                    int razlikaGodina = knjiga.DatumObjavljivanja.Year - procitana_knjiga.DatumObjavljivanja.Year;
+                    if (razlikaGodina < 0) razlikaGodina = -razlikaGodina;
+
+                    if (razlikaGodina <= 3)
+                    {
+                        skor += 2;
+                        string razlog = "Slična godina izdavanja";
+                        bool vec_postoji = false;
+                        for (int r = 0; r < razlozi.Count; r++)
+                        {
+                            if (razlozi[r] == razlog) { vec_postoji = true; break; }
+                        }
+                        if (!vec_postoji) razlozi.Add(razlog);
+                    }
+
+                   
+                    if (knjiga.Izdavac != null && procitana_knjiga.Izdavac != null &&
+                        knjiga.Izdavac.NazivIzdavaca == procitana_knjiga.Izdavac.NazivIzdavaca)
+                    {
+                        skor += 1;
+                        string razlog = $"Izdavač: {knjiga.Izdavac.NazivIzdavaca}";
+                        bool vec_postoji = false;
+                        for (int r = 0; r < razlozi.Count; r++)
+                        {
+                            if (razlozi[r] == razlog) { vec_postoji = true; break; }
+                        }
+                        if (!vec_postoji) razlozi.Add(razlog);
+                    }
+                }
+
+                if (skor > 0)
+                {
+                    preporuke.Add(new int[] { i, skor });
+                    razloziPreporuka.Add(razlozi);
+                }
+            }
+
+            // Sortiraj preporuke po skoru - bubble sort (silazno)
+            for (int i = 0; i < preporuke.Count - 1; i++)
+            {
+                for (int j = 0; j < preporuke.Count - i - 1; j++)
+                {
+                    if (preporuke[j][1] < preporuke[j + 1][1])
+                    {
+                        var tmp = preporuke[j];
+                        preporuke[j] = preporuke[j + 1];
+                        preporuke[j + 1] = tmp;
+
+                        var tmpRazlozi = razloziPreporuka[j];
+                        razloziPreporuka[j] = razloziPreporuka[j + 1];
+                        razloziPreporuka[j + 1] = tmpRazlozi;
+                    }
+                }
+            }
+
+            // Prikaži preporuke
+            if (preporuke.Count > 0)
+            {
+                Console.WriteLine(" PERSONALIZOVANE PREPORUKE ZA VAS \n");
+                int prikazano = 0;
+                for (int i = 0; i < preporuke.Count && prikazano < 5; i++)
+                {
+                    int knjigaIndex = preporuke[i][0];
+                    var knjiga = _db.knjige[knjigaIndex];
+                    var razlozi = razloziPreporuka[i];
+
+                    Console.WriteLine($"───────────────────────────────────────────────────");
+                    Console.WriteLine($"{prikazano + 1}.  {knjiga.NazivKnjige}");
+                    Console.WriteLine($"   ISBN: {knjiga.ISBN}");
+                    Console.WriteLine($"   Tip: {knjiga.VrstaKnjige}");
+                    Console.WriteLine($"   Objavljeno: {knjiga.DatumObjavljivanja:dd.MM.yyyy}");
+
+                    if (knjiga.Autori != null && knjiga.Autori.Count > 0)
+                    {
+                        Console.Write("     Autori: ");
+                        for (int a = 0; a < knjiga.Autori.Count; a++)
+                        {
+                            Console.Write($"{knjiga.Autori[a].ImeAutora} {knjiga.Autori[a].PrezimeAutora}");
+                            if (a < knjiga.Autori.Count - 1) Console.Write(", ");
+                        }
+                        Console.WriteLine();
+                    }
+
+                    Console.WriteLine($"\n    Zašto preporučujemo:");
+                    for (int r = 0; r < razlozi.Count; r++)
+                        Console.WriteLine($"      • {razlozi[r]}");
+
+                    Console.WriteLine();
+                    prikazano++;
+                }
+                Console.WriteLine("═══════════════════════════════════════════════════");
+            }
+            else
+            {
+                Console.WriteLine("Nema knjiga sa sličnim karakteristikama.");
+                Console.WriteLine("Evo najpopularnijih knjiga:\n");
+                PreporuciNajpopularnije();
+            }
+        }
+
+        // Preporuči najpopularnije knjige (po broju recenzija)
+        private void PreporuciNajpopularnije()
+        {
+            // Lista: [indeks_knjige, broj_recenzija]
+            var popularnost = new List<int[]>();
+
+            for (int i = 0; i < _db.knjige.Count; i++)
+            {
+                var knjiga = _db.knjige[i];
+                int brojRecenzija = knjiga.Recenzije?.Count ?? 0;
+                popularnost.Add(new int[] { i, brojRecenzija });
+            }
+
+            // Bubble sort po broju recenzija (silazno)
+            for (int i = 0; i < popularnost.Count - 1; i++)
+            {
+                for (int j = 0; j < popularnost.Count - i - 1; j++)
+                {
+                    if (popularnost[j][1] < popularnost[j + 1][1])
+                    {
+                        var tmp = popularnost[j];
+                        popularnost[j] = popularnost[j + 1];
+                        popularnost[j + 1] = tmp;
+                    }
+                }
+            }
+
+            // Prikaži top 5
+            Console.WriteLine("🔥 TOP 5 NAJPOPULARNIJIH KNJIGA 🔥\n");
+            bool imaPopularnih = false;
+
+            for (int i = 0; i < popularnost.Count && i < 5; i++)
+            {
+                int brojRecenzija = popularnost[i][1];
+                if (brojRecenzija == 0) break;
+
+                imaPopularnih = true;
+                int knjigaIndex = popularnost[i][0];
+                var knjiga = _db.knjige[knjigaIndex];
+
+                Console.WriteLine($"───────────────────────────────────────────────────");
+                Console.WriteLine($"{i + 1}. 📕 {knjiga.NazivKnjige}");
+                Console.WriteLine($"   ISBN: {knjiga.ISBN}");
+                Console.WriteLine($"   Tip: {knjiga.VrstaKnjige}");
+                Console.WriteLine($"   📊 Recenzije: {brojRecenzija}");
+
+                if (knjiga.Autori != null && knjiga.Autori.Count > 0)
+                {
+                    Console.Write("   ✍️  Autori: ");
+                    for (int a = 0; a < knjiga.Autori.Count; a++)
+                    {
+                        Console.Write($"{knjiga.Autori[a].ImeAutora} {knjiga.Autori[a].PrezimeAutora}");
+                        if (a < knjiga.Autori.Count - 1) Console.Write(", ");
+                    }
+                    Console.WriteLine();
+                }
+                Console.WriteLine();
+            }
+
+            if (!imaPopularnih)
+            {
+                Console.WriteLine("Još nema knjiga sa recenzijama u sistemu.");
+            }
+            else
+            {
+                Console.WriteLine("═══════════════════════════════════════════════════");
+            }
+        }
+
+
     }
 }

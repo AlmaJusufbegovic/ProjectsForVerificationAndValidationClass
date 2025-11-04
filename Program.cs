@@ -21,7 +21,8 @@ namespace ForBooks
                 Console.WriteLine("3. Prijava");
                 Console.WriteLine("4. Upravljanje knjigama");
                 Console.WriteLine("5. Upravljanje recenzijama");
-                Console.WriteLine("6. Izlaz");
+                Console.WriteLine("6. Predloži mi knjigu");  // NOVA OPCIJA
+                Console.WriteLine("7. Izlaz");
                 Console.Write("Odabir: ");
                 string izbor = Console.ReadLine()!;
 
@@ -32,7 +33,8 @@ namespace ForBooks
                     case "3": korisnikServis.Prijava(); break;
                     case "4": PodmeniKnjige(knjigaServis); break;
                     case "5": PodmeniRecenzije(recenzijaServis); break;
-                    case "6": Console.WriteLine("Doviđenja!"); return;
+                    case "6": knjigaServis.PredloziKnjiguMeni(); break;  // NOVA FUNKCIONALNOST
+                    case "7": Console.WriteLine("Doviđenja!"); return;
                     default: Console.WriteLine("Neispravan unos!"); break;
                 }
             }
@@ -69,7 +71,6 @@ namespace ForBooks
             }
         }
 
-   
         static void PodmeniRecenzije(RecenzijaServis s)
         {
             while (true)
@@ -82,8 +83,8 @@ namespace ForBooks
                 Console.WriteLine("5. Obriši recenziju");
                 Console.WriteLine("6. Nazad");
                 Console.Write("Odabir: ");
-
                 string izbor = Console.ReadLine()!;
+
                 switch (izbor)
                 {
                     case "1": s.DodajRecenziju(); break;
