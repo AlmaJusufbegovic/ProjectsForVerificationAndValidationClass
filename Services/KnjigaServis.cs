@@ -580,7 +580,7 @@ namespace ForBooks.Services
             }
 
             // Prikaži top 5
-            Console.WriteLine("🔥 TOP 5 NAJPOPULARNIJIH KNJIGA 🔥\n");
+            Console.WriteLine("TOP 5 NAJPOPULARNIJIH KNJIGA\n");
             bool imaPopularnih = false;
 
             for (int i = 0; i < popularnost.Count && i < 5; i++)
@@ -593,14 +593,14 @@ namespace ForBooks.Services
                 var knjiga = _db.knjige[knjigaIndex];
 
                 Console.WriteLine($"───────────────────────────────────────────────────");
-                Console.WriteLine($"{i + 1}. 📕 {knjiga.NazivKnjige}");
+                Console.WriteLine($"{i + 1}. {knjiga.NazivKnjige}");
                 Console.WriteLine($"   ISBN: {knjiga.ISBN}");
                 Console.WriteLine($"   Tip: {knjiga.VrstaKnjige}");
-                Console.WriteLine($"   📊 Recenzije: {brojRecenzija}");
+                Console.WriteLine($"    Recenzije: {brojRecenzija}");
 
                 if (knjiga.Autori != null && knjiga.Autori.Count > 0)
                 {
-                    Console.Write("   ✍️  Autori: ");
+                    Console.Write("   Autori: ");
                     for (int a = 0; a < knjiga.Autori.Count; a++)
                     {
                         Console.Write($"{knjiga.Autori[a].ImeAutora} {knjiga.Autori[a].PrezimeAutora}");
