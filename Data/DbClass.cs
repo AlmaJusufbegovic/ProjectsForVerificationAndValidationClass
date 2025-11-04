@@ -25,7 +25,23 @@ namespace ForBooks.Data
                 r.Korisnik = korisnici.FirstOrDefault(u => u.ID == r.KorisnikID);
             }
 
+
+            // 🔥 DODAJ OVO - poveži recenzije sa knjigama
+            foreach (var knjiga in knjige)
+            {
+                if (knjiga.Recenzije == null)
+                    knjiga.Recenzije = new List<Recenzija>();
+
+                foreach (var recenzija in Recenzije)
+                {
+                    if (recenzija.KnjigaID == knjiga.ID)
+                    {
+                        knjiga.Recenzije.Add(recenzija);
+                    }
+                }
+            }
         }
+
 
         // Korisnici
         public void AddKorisnik(Korisnik korisnik)
@@ -90,6 +106,7 @@ namespace ForBooks.Data
                 .Where(r => r.Knjiga != null && r.Knjiga.ID == knjigaId)
                 .ToList();
         }
+
 
     }
 }
