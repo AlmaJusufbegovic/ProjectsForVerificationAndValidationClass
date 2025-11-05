@@ -25,8 +25,6 @@ namespace ForBooks.Data
                 r.Korisnik = korisnici.FirstOrDefault(u => u.ID == r.KorisnikID);
             }
 
-
-            // 🔥 DODAJ OVO - poveži recenzije sa knjigama
             foreach (var knjiga in knjige)
             {
                 if (knjiga.Recenzije == null)

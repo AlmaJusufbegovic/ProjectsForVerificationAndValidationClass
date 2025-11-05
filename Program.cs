@@ -12,6 +12,7 @@ namespace ForBooks
             var korisnikServis = new KorisnikServis(db);
             var knjigaServis = new KnjigaServis(db);
             var recenzijaServis = new RecenzijaServis(db);
+            var izvjestajServis = new IzvjestajServis(db);
 
             while (true)
             {
@@ -22,7 +23,8 @@ namespace ForBooks
                 Console.WriteLine("4. Upravljanje knjigama");
                 Console.WriteLine("5. Upravljanje recenzijama");
                 Console.WriteLine("6. Predloži mi knjigu");  // NOVA OPCIJA
-                Console.WriteLine("7. Izlaz");
+                Console.WriteLine("7. Izvjestaj o procitanim knjigama");
+                Console.WriteLine("8. Izlaz");
                 Console.Write("Odabir: ");
                 string izbor = Console.ReadLine()!;
 
@@ -34,7 +36,8 @@ namespace ForBooks
                     case "4": PodmeniKnjige(knjigaServis); break;
                     case "5": PodmeniRecenzije(recenzijaServis); break;
                     case "6": knjigaServis.PredloziKnjiguMeni(); break;  // NOVA FUNKCIONALNOST
-                    case "7": Console.WriteLine("Doviđenja!"); return;
+                    case "7": izvjestajServis.getIzvjestaj(); break;       //novo
+                    case "8": Console.WriteLine("Doviđenja!"); return;
                     default: Console.WriteLine("Neispravan unos!"); break;
                 }
             }
