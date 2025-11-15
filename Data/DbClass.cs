@@ -53,7 +53,7 @@ namespace ForBooks.Data
             return korisnici.FirstOrDefault(u => u.ID == korisnikId);
         }
 
-        public void UpdateKorisnici()
+        public virtual void UpdateKorisnici()
         {
             FileHelper.SaveToFile("korisnici", korisnici);
         }
